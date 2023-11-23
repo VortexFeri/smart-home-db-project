@@ -25,10 +25,10 @@ This is a project we made for the university Database assignment. It is a web ap
 
 <table>
   <tr>
-    <td style="text-align:center"><a href="https://github.com/VortexFeri">Ferencz Cârnu</a></td>
-    <td style="text-align:center"><a href="https://github.com/StefanChivoiu">Ștefan Chivoiu</a></td>
-    <td style="text-align:center"><a href="https://github.com/WaruSpirit">George Bănucu</a></td>
-    <td style="text-align:center"><a href="https://github.com/AlexandruBularca">Alexandru Bularca</a></td>
+    <td align="center"><a href="https://github.com/VortexFeri">Ferencz Cârnu</a></td>
+    <td align="center"><a href="https://github.com/StefanChivoiu">Ștefan Chivoiu</a></td>
+    <td align="center"><a href="https://github.com/WaruSpirit">George Bănucu</a></td>
+    <td align="center"><a href="https://github.com/AlexandruBularca">Alexandru Bularca</a></td>
   </tr>
   <tr>
     <td><img src="https://github.com/VortexFeri.png" alt="VortexFeri" width=128></td>
