@@ -1,5 +1,3 @@
 package com.iec3.smarthome.room;
 
-public class Room {
-
-}
+public record Room(int id, String name, double total_usage) {};
