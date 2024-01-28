@@ -28,7 +28,7 @@
                              th:onclick="'deleteDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">Delete</button></td>
 
                 <td ><button th:id="${device.key.id+'EDIT'}"
-                >Edit</button></td>
+                             th:onclick="'editDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">Edit</button></td>
 
             </tr>
         </tbody>
@@ -59,6 +59,35 @@
             .catch(error => {
                 // Handle errors here
                 console.error('Error during device deletion:', error);
+            });
+        }
+    }
+
+     function editDevice(deviceId) {
+        // Prompt the user for a new value
+        var newValue = prompt('Enter the new value for the device:');
+
+        // If the user entered a value and didn't click cancel
+        if (newValue !== null) {
+            fetch('/rooms/'+ roomid+ '/edit-device/' + deviceId, {
+                method: 'PUT', // Use PUT or PATCH depending on your API
+                headers: {
+                    'Content-Type': 'application/json',
+                    // You may need to include additional headers, such as authorization headers
+                },
+                body: JSON.stringify({ newValue: newValue })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Handle the successful response (optional)
+                console.log('Device edited successfully');
+                // Optionally, you can update the UI or refresh the page after successful edit
+            })
+            .catch(error => {
+                // Handle errors here
+                console.error('Error during device edit:', error);
             });
         }
     }
