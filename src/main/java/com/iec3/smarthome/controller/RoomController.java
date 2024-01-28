@@ -35,6 +35,7 @@ public class RoomController {
     public String getRoomId(@PathVariable("id") Integer id, Model model) {
         RoomDeviceList devicesList = roomService.getDevices(id);
         model.addAttribute("devicesList", devicesList);
+        model.addAttribute("roomid", id);
         return "room";
     }
 
@@ -43,9 +44,10 @@ public class RoomController {
         roomService.addNewRoom(room);
     }
 
-    @DeleteMapping("{id}")
-    public void deleteRoom(@PathVariable("id") Integer id) {
-        roomService.deleteRoom(id);
+    @DeleteMapping("{roomid}/delete-device/{id}")
+    public String deleteRoom(@PathVariable("id") Integer id) {
+        //roomService.deleteRoom(id);
+        return "redirect:/Deleted";
     }
 
     // TODO: Update room
