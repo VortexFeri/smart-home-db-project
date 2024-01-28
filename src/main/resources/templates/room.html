@@ -25,7 +25,7 @@
                 <td th:text="${device.key.name}"></td>
                 <td th:text="${device.value}"></td>
                 <td th:text="${device.key.wattage}"></td>
-                <td th:text="${device.value * device.key.wattage}"></td>
+                <td th:text="${device.value * device.key.wattage}" class="wattage"></td>
                 <td ><button th:id="${device.key.id+'DELETE'}"
                              th:onclick="'deleteDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">Delete</button></td>
 
@@ -47,10 +47,17 @@
     <button id="confirmAdd">Confirm Add</button>
 </div>
 
-    
+<div id="pieChart"></div>
+<div>
+    <label for="totalPower">Total Power Consumption:</label>
+    <input type="text" id="totalPower" readonly>
+</div>
+
     
 </body>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
+    window.onload=()=>{updateTotalPower()};
     function deleteDevice(deviceId,roomid) {
         if (confirm('Are you sure you want to delete this device?')) {
             fetch('/rooms/'+ roomid+ '/delete-device/' + deviceId, {
@@ -73,6 +80,7 @@
                 console.error('Error during device deletion:', error);
             });
         }
+        updateTotalPower();
     }
 
      function editDevice(deviceId,roomid) {
@@ -102,6 +110,7 @@
                 console.error('Error during device edit:', error);
             });
         }
+        updateTotalPower()
     }
 
       document.getElementById('addButton').addEventListener('click', function() {
@@ -114,9 +123,47 @@
             // You can handle the selected device ID here (e.g., send it to the server)
             console.log('Selected Device ID:', selectedDeviceId);
             // Optionally, you can update the UI or refresh the page after successful add
+            updateTotalPower();
         }
         document.getElementById('deviceDropdown').style.display = 'none';
     });
+        const options = {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: 'Total Power Consumption by Device'
+        },
+        plotOptions: {
+            pie: {
+                depth: 45
+            }
+        },
+        series: [{
+            name: 'Total Power Consumption',
+            data: [
+                { name: 'Device 1', y: 100 },
+                { name: 'Device 2', y: 50 },
+                { name: 'Device 3', y: 20 }
+            ]
+        }]
+    };
+
+    const chart = Highcharts.chart('pieChart', options);
+ function updateTotalPower() {
+        var totalPower = 0;
+        var rows = document.querySelectorAll('tbody tr');
+        rows.forEach(function(row) {
+            var totalForRow = parseInt(row.cells[3].innerText);
+            totalPower += isNaN(totalForRow) ? 0 : totalForRow;
+        });
+        document.getElementById('totalPower').value = totalPower;
+    }
 </script>
 
 </html>
