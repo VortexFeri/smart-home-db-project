@@ -63,7 +63,7 @@ public class RoomDeviceListDAO implements Dao<RoomDeviceList> {
         var sql = """
                 SELECT room_id, device_id, device_count
                 FROM devices_in_room
-                LIMIT 100;
+                WHERE room_id=?;
                 """;
         return jdbcTemplate.query(sql, (rs, count) -> {
             Optional<Room> room = roomDAO.getById(rs.getInt("room_id"));
@@ -76,6 +76,6 @@ public class RoomDeviceListDAO implements Dao<RoomDeviceList> {
             } while (rs.next());
 
             return new RoomDeviceList(room.get(), map);
-        }).stream().findFirst();
+        },id).stream().findFirst();
     }
 }
