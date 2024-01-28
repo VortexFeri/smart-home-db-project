@@ -1,5 +1,8 @@
-package com.iec3.smarthome.device;
+package com.iec3.smarthome.service;
 
+import com.iec3.smarthome.dao.DeviceDAO;
+import com.iec3.smarthome.dto.DeviceDTO;
+import com.iec3.smarthome.entity.Device;
 import com.iec3.smarthome.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -9,28 +12,28 @@ import java.util.Optional;
 @Service
 public class DeviceService {
 
-    private final DeviceDao deviceDao;
+    private final DeviceDAO deviceDao;
 
-    public DeviceService(DeviceDao deviceDao) {
+    public DeviceService(DeviceDAO deviceDao) {
         this.deviceDao = deviceDao;
     }
 
     public List<Device> getDevice() {
-        return deviceDao.selectDevices();
+        return deviceDao.getAll();
     }
 
-    public void addNewDevice(Device device) {
+    public void addNewDevice(DeviceDTO device) {
         // TODO: check if device exists
-        int result = deviceDao.insertDevice(device);
+        int result = deviceDao.insert(new Device(0, device.name(), device.wattage()));
         if (result != 1) {
             throw new IllegalStateException("oops something went wrong");
         }
     }
 
     public void deleteDevice(Integer id) {
-        Optional<Device> devices = deviceDao.selectDeviceById(id);
+        Optional<Device> devices = deviceDao.getById(id);
         devices.ifPresentOrElse(device -> {
-            int result = deviceDao.deleteDevice(id);
+            int result = deviceDao.delete(id);
             if (result != 1) {
                 throw new IllegalStateException("oops could not delete device");
             }
@@ -40,7 +43,7 @@ public class DeviceService {
     }
 
     public Device getDevice(int id) {
-        return deviceDao.selectDeviceById(id)
+        return deviceDao.getById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Device with id %s not found", id)));
     }
 }

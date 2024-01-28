@@ -1,11 +1,14 @@
-package com.iec3.smarthome.device;
+package com.iec3.smarthome.controller;
 
+import com.iec3.smarthome.dto.DeviceDTO;
+import com.iec3.smarthome.entity.Device;
+import com.iec3.smarthome.service.DeviceService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/devices")
+@RequestMapping(path = "devices")
 public class DeviceController {
 
     private final DeviceService deviceService;
@@ -25,7 +28,7 @@ public class DeviceController {
     }
 
     @PostMapping
-    public void addDevice(@RequestBody Device device) {
+    public void addDevice(@RequestBody DeviceDTO device) {
         deviceService.addNewDevice(device);
     }
 
@@ -34,5 +37,5 @@ public class DeviceController {
         deviceService.deleteDevice(id);
     }
 
-   // TODO: Update device
+    // TODO: Update device
 }

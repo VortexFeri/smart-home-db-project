@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <th>Device</th>
+            <th>Count</th>
+            <th>Wattage</th>
+            <th>Total for device</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="device : ${devicesList.deviceMap.entrySet()}">
+                <td th:text="${device.key.name}"></td>
+                <td th:text="${device.value}"></td>
+                <td th:text="${device.key.wattage}"></td>
+                <td th:text="${device.value * device.key.wattage}"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+</body>
+</html>
