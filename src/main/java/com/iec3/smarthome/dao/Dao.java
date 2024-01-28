@@ -3,10 +3,12 @@ package com.iec3.smarthome.dao;
 import java.util.List;
 import java.util.Optional;
 
-public interface Dao<T> {
+public interface Dao<T,k> {
+
     int insert(T t);
-    int delete(int id);
-    int update(int id, T t);
+    int delete(k id);
+    int update(k id, T t);
     List<T> getAll();
-    Optional<T> getById(int id);
+    Optional<T> getById(k id);
+
 }

@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Repository
-public class DeviceDAO implements Dao<Device> {
+public class DeviceDAO implements Dao<Device, Integer> {
     private final JdbcTemplate jdbcTemplate;
 
     public DeviceDAO(JdbcTemplate jdbcTemplate) {
@@ -42,7 +42,7 @@ public class DeviceDAO implements Dao<Device> {
     }
 
     @Override
-    public int delete(int id) {
+    public int delete(Integer id) {
         var sql = """
                 DELETE FROM device
                 WHERE id = ?
@@ -51,13 +51,13 @@ public class DeviceDAO implements Dao<Device> {
     }
 
     @Override
-    public int update(int id, Device device) {
+    public int update(Integer id, Device device) {
         // TODO: update
         return 0;
     }
 
     @Override
-    public Optional<Device> getById(int id) {
+    public Optional<Device> getById(Integer id) {
         var sql = """
                 SELECT id, device_name, device_wattage
                 FROM device

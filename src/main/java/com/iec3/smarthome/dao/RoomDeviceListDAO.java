@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
-public class RoomDeviceListDAO implements Dao<RoomDeviceList> {
+public class RoomDeviceListDAO implements Dao<RoomDeviceList,Integer> {
     private final JdbcTemplate jdbcTemplate;
     private final DeviceDAO deviceDAO;
     private final RoomDAO roomDAO;
@@ -38,7 +38,7 @@ public class RoomDeviceListDAO implements Dao<RoomDeviceList> {
     }
 
     @Override
-    public int delete(int id) {
+    public int delete(Integer id) {
         var sql = """
                 DELETE FROM devices_in_room
                 WHERE id = ?;
@@ -47,7 +47,7 @@ public class RoomDeviceListDAO implements Dao<RoomDeviceList> {
     }
 
     @Override
-    public int update(int id, RoomDeviceList roomDeviceList) {
+    public int update(Integer id, RoomDeviceList roomDeviceList) {
         // TODO: update
         return 0;
     }
@@ -59,7 +59,7 @@ public class RoomDeviceListDAO implements Dao<RoomDeviceList> {
     }
 
     @Override
-    public Optional<RoomDeviceList> getById(int id) {
+    public Optional<RoomDeviceList> getById(Integer id) {
         var sql = """
                 SELECT room_id, device_id, device_count
                 FROM devices_in_room

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class RoomDAO implements Dao<Room> {
+public class RoomDAO implements Dao<Room,Integer> {
     private final JdbcTemplate jdbcTemplate;
 
     public RoomDAO(JdbcTemplate jdbcTemplate) {
@@ -41,7 +41,7 @@ public class RoomDAO implements Dao<Room> {
     }
 
     @Override
-    public int delete(int id) {
+    public int delete(Integer id) {
         var sql = """
                 DELETE FROM room
                 WHERE id = ?
@@ -50,13 +50,13 @@ public class RoomDAO implements Dao<Room> {
     }
 
     @Override
-    public int update(int id, Room room) {
+    public int update(Integer id, Room room) {
         // TODO: implement update
         return 0;
     }
 
     @Override
-    public Optional<Room> getById(int id) {
+    public Optional<Room> getById(Integer id) {
         var sql = """
                 SELECT id, room_type, room_display_name
                 FROM room
