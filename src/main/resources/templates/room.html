@@ -7,6 +7,8 @@
 </head>
 <body>
 
+<div th:each="entry : ${devicesList}">
+    <h2 th:text="${entry.room.name} "></h2>
     <table>
         <thead>
         <tr>
@@ -34,6 +36,16 @@
         </tbody>
     </table>
 
+</div>
+<div>
+    <button id="addButton">Add Device</button>
+    <select id="deviceDropdown">
+        <option th:each="device : ${devicesList.deviceMap.entrySet()}"
+                th:value="${device.key.id}"
+                th:text="${device.key.name}"></option>
+    </select>
+    <button id="confirmAdd">Confirm Add</button>
+</div>
 
     
     
@@ -91,6 +103,20 @@
             });
         }
     }
+
+      document.getElementById('addButton').addEventListener('click', function() {
+        document.getElementById('deviceDropdown').style.display = 'block';
+    });
+
+    document.getElementById('confirmAdd').addEventListener('click', function() {
+        var selectedDeviceId = document.getElementById('deviceDropdown').value;
+        if (selectedDeviceId) {
+            // You can handle the selected device ID here (e.g., send it to the server)
+            console.log('Selected Device ID:', selectedDeviceId);
+            // Optionally, you can update the UI or refresh the page after successful add
+        }
+        document.getElementById('deviceDropdown').style.display = 'none';
+    });
 </script>
 
 </html>
