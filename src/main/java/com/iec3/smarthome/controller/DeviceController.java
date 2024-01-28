@@ -1,8 +1,11 @@
 package com.iec3.smarthome.controller;
 
+import com.iec3.smarthome.dao.PvPDAO;
 import com.iec3.smarthome.dto.DeviceDTO;
 import com.iec3.smarthome.entity.Device;
+import com.iec3.smarthome.entity.PvP;
 import com.iec3.smarthome.service.DeviceService;
+import com.iec3.smarthome.service.PvPService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,9 +15,12 @@ import java.util.List;
 public class DeviceController {
 
     private final DeviceService deviceService;
+    private final PvPService pvPService;
 
-    public DeviceController(DeviceService deviceService) {
+
+    public DeviceController(DeviceService deviceService, PvPService pvPService) {
         this.deviceService = deviceService;
+        this.pvPService = pvPService;
     }
 
     @GetMapping
@@ -38,4 +44,15 @@ public class DeviceController {
     }
 
     // TODO: Update device
+
+    @GetMapping("PvP")
+    public List<PvP> getPanels()
+    {
+        return pvPService.getPvP();
+    }
+    @PostMapping("PvP/{month}")
+    public void addUsage(@RequestBody float a,@PathVariable("month")int month) {
+        pvPService.addNewUsage(a,month);
+    }
+
 }

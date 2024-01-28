@@ -3,6 +3,7 @@ package com.iec3.smarthome.controller;
 import com.iec3.smarthome.entity.Room;
 import com.iec3.smarthome.entity.RoomDeviceList;
 import com.iec3.smarthome.service.DeviceService;
+import com.iec3.smarthome.service.PvPService;
 import com.iec3.smarthome.service.RoomService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +15,12 @@ import java.util.ArrayList;
 @RequestMapping(path = "rooms")
 public class RoomController {
 
+    private final PvPService pvPService;
     private final RoomService roomService;
     private final DeviceService deviceService;
 
-    public RoomController(RoomService roomService, DeviceService deviceService) {
+    public RoomController(PvPService pvPService, RoomService roomService, DeviceService deviceService) {
+        this.pvPService = pvPService;
         this.roomService = roomService;
         this.deviceService = deviceService;
     }
@@ -28,6 +31,7 @@ public class RoomController {
         var allRooms = roomService.getRoom();
         allRooms.forEach(room -> DeviceL.add(roomService.getDevices(room.getId())));
         model.addAttribute("list", DeviceL);
+        model.addAttribute("pvpList",pvPService.getPvP());
         return "rooms";
     }
 
@@ -51,4 +55,6 @@ public class RoomController {
     }
 
     // TODO: Update room
+
+
 }
