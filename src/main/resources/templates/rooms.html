@@ -7,22 +7,29 @@
 </head>
 <body>
 
-<table th:each="room : ${rooms}">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Type</th>
-        <th>Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="room : ${rooms}">
-        <td th:text="${room.id}"></td>
-        <td th:text="${room.type}"></td>
-        <td th:text="${room.name}"></td>
-    </tr>
-    </tbody>
-</table>
+<div th:each="entry : ${list}">
+    <h2 th:text="${entry.room.name}"></h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Device ID</th>
+            <th>Device Name</th>
+            <th>Device Count</th>
+            <th>Device Wattage</th>
+            <th>Monthly Consumption</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="device : ${entry.deviceMap.entrySet()}">
+            <td th:text="${device.key.id}"></td>
+            <td th:text="${device.key.name}"></td>
+            <th th:text="${device.value}"></th>
+            <td th:text="${device.key.wattage}"></td>
+            <td th:text="${device.key.wattage * device.value * 30}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
