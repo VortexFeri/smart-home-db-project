@@ -16,22 +16,26 @@
             <th>Count</th>
             <th>Wattage</th>
             <th>Total for device</th>
-            <th>  </th>
-            <th>  </th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
             <tr th:each="device : ${devicesList.deviceMap.entrySet()}">
-                <td th:text="${device.key.name}"></td>
+                <td th:text="${device.key.name}" class="device_name"></td>
                 <td th:text="${device.value}"></td>
                 <td th:text="${device.key.wattage}"></td>
                 <td th:text="${device.value * device.key.wattage}" class="wattage"></td>
-                <td ><button th:id="${device.key.id+'DELETE'}"
-                             th:onclick="'deleteDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">Delete</button></td>
-
-                <td ><button th:id="${device.key.id+'EDIT'}"
-                             th:onclick="'editDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">Edit</button></td>
-
+                <td>
+                    <button th:id="${device.key.id+'DELETE'}" th:onclick="'deleteDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">
+                        Delete
+                    </button>
+                </td>
+                <td>
+                    <button th:id="${device.key.id+'EDIT'}" th:onclick="'editDevice(\'' + ${device.key.id} + '\', \'' + ${roomid} + '\')'">
+                        Edit
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -39,11 +43,7 @@
 </div>
 <div>
     <button id="addButton">Add Device</button>
-    <select id="deviceDropdown">
-        <option th:each="device : ${devicesList.deviceMap.entrySet()}"
-                th:value="${device.key.id}"
-                th:text="${device.key.name}"></option>
-    </select>
+    <select id="deviceDropdown"></select>
     <button id="confirmAdd">Confirm Add</button>
 </div>
 
@@ -57,10 +57,73 @@
 </body>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
-    window.onload=()=>{updateTotalPower()};
+    function updateTotalPower() {
+    var totalPower = 0;
+    var rows = document.querySelectorAll('.wattage');
+    rows.forEach(row => totalPower += parseInt(row.innerHTML));
+    document.getElementById('totalPower').value = totalPower;
+};
+
+function getDevices() {
+  return fetch('/devices', {
+    method: 'GET'
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .catch(err => {
+      console.error('Error during fetching devices:', error);
+    });
+}
+
+function updatePieChart(chartId) {
+    const options = {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45,
+                beta: 0
+            }
+        },
+        title: {
+            text: ''
+        },
+        plotOptions: {
+            pie: {
+                depth: 45
+            }
+        },
+        series: [{
+            name: 'Total Power Consumption',
+            data: [
+            ]
+        }]
+    };
+    
+    const devices = document.getElementsByClassName("device_name");
+    const wattages = document.getElementsByClassName("wattage");
+    console.log(devices.length)
+    for (let i = 0; i < devices.length; i++) {
+        options.series[0].data.push({name: devices[i].innerHTML, y: parseInt(wattages[i].innerHTML)});
+    }
+    console.log(options);
+    const chart = Highcharts.chart(chartId, options);
+}
+
+
+    window.onload=()=>{
+        updateTotalPower();
+        updatePieChart("pieChart");
+        updateDropDown();
+    };
+
     function deleteDevice(deviceId,roomid) {
         if (confirm('Are you sure you want to delete this device?')) {
-            fetch('/rooms/'+ roomid+ '/delete-device/' + deviceId, {
+            fetch('/rooms/' + roomid + '/delete-device/' + deviceId, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,39 +146,29 @@
         updateTotalPower();
     }
 
-     function editDevice(deviceId,roomid) {
-        // Prompt the user for a new value
+    function editDevice(deviceId,roomid) {
         var newValue = prompt('Enter the new value for the device:');
 
-        // If the user entered a value and didn't click cancel
         if (newValue !== null) {
             fetch('/rooms/'+ roomid+ '/edit-device/' + deviceId, {
-                method: 'PUT', // Use PUT or PATCH depending on your API
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    // You may need to include additional headers, such as authorization headers
                 },
-                body: JSON.stringify({ newValue: newValue })
+                body: JSON.stringify(newValue)
             })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                // Handle the successful response (optional)
                 console.log('Device edited successfully');
-                // Optionally, you can update the UI or refresh the page after successful edit
             })
             .catch(error => {
-                // Handle errors here
                 console.error('Error during device edit:', error);
             });
         }
         updateTotalPower()
     }
-
-      document.getElementById('addButton').addEventListener('click', function() {
-        document.getElementById('deviceDropdown').style.display = 'block';
-    });
 
     document.getElementById('confirmAdd').addEventListener('click', function() {
         var selectedDeviceId = document.getElementById('deviceDropdown').value;
@@ -125,45 +178,36 @@
             // Optionally, you can update the UI or refresh the page after successful add
             updateTotalPower();
         }
-        document.getElementById('deviceDropdown').style.display = 'none';
     });
-        const options = {
-        chart: {
-            type: 'pie',
-            options3d: {
-                enabled: true,
-                alpha: 45,
-                beta: 0
-            }
-        },
-        title: {
-            text: 'Total Power Consumption by Device'
-        },
-        plotOptions: {
-            pie: {
-                depth: 45
-            }
-        },
-        series: [{
-            name: 'Total Power Consumption',
-            data: [
-                { name: 'Device 1', y: 100 },
-                { name: 'Device 2', y: 50 },
-                { name: 'Device 3', y: 20 }
-            ]
-        }]
-    };
 
-    const chart = Highcharts.chart('pieChart', options);
- function updateTotalPower() {
-        var totalPower = 0;
-        var rows = document.querySelectorAll('tbody tr');
-        rows.forEach(function(row) {
-            var totalForRow = parseInt(row.cells[3].innerText);
-            totalPower += isNaN(totalForRow) ? 0 : totalForRow;
+    function updateDropDown() {
+        const list = document.getElementById('deviceDropdown');
+        let devices;
+        
+        fetch('/devices', {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log(devices)
+            devices = data
+            devices.forEach(device => {
+                console.log(device)
+                list.appendChild(new Option);
+                list.lastChild.innerHTML = device.name;
+                list.lastChild.setAttribute("value", device.id);
+            })
+        })
+        .catch(err => {
+        console.error('Error during fetching devices:', err);
         });
-        document.getElementById('totalPower').value = totalPower;
     }
+    
 </script>
 
 </html>

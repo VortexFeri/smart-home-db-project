@@ -10,8 +10,8 @@
 <h2>Login</h2>
 
 <form id="myForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="user" required>
+    <label for="user">Username:</label>
+    <input type="text" id="user" name="user" required>
 
     <br>
 
@@ -25,26 +25,37 @@
 
 </body>
 <script>
-    const form = document.getElementById('myForm');
-form.addEventListener('submit', (event) => {
-  event.preventDefault(); // Prevent the default form submission behavior
+  const form = document.getElementById('myForm');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
 
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
+    const username = document.getElementById('user').value;
+    const password = document.getElementById('password').value;
+    console.log()
 
-  const data = {
-    username,
-    password
-  };
+    let formData = {"user": username, "password": password}
+    console.log(formData)
 
-  // Send POST request to the server with the JSON data
-  axios.post('/login', data)
-    .then(response => {
-      console.log('Welcome!');
-    })
-    .catch(error => {
-      console.error('Wrong Credentials', error);
-    });
-});
-    </script>
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    };
+    console.log(options.body);
+
+    fetch('/login', options)
+      .then(response => {
+        if (response.ok) 
+        window.location.href = '/rooms';
+        else if (response.status == 500)
+          alert("Wrong credentials! Try again!"); 
+      })
+      .catch(error => {
+        console.error('Error adding device:', error);
+      });
+  });
+
+</script>
 </html>
