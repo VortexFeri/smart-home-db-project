@@ -29,6 +29,9 @@ public class RoomDeviceList {
     }
 
     public int getCount(int device_id) {
+        Device dev = findDeviceById((device_id));
+        if (dev == null)
+            throw new NullPointerException();
         return deviceMap.get(findDeviceById(device_id));
     }
 

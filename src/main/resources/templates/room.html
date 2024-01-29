@@ -11,13 +11,14 @@
     <div th:each="entry : ${devicesList}">
         <h2 th:text="${entry.room.name} "></h2>
         <button id="addButton">+</button>
+        <a href="/rooms">Home</a>
         <table>
             <thead>
             <tr>
                 <th>Device</th>
                 <th>Count</th>
-                <th>Wattage</th>
-                <th>Total for device</th>
+                <th>Wattage (Wh/day)</th>
+                <th>Total for device (Wh/day)</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -163,6 +164,7 @@
                 },
             })
             .then(response => {
+                location.replace(response.url)
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -190,6 +192,7 @@
                 body: JSON.stringify(newValue)
             })
             .then(response => {
+                location.replace(response.url)
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

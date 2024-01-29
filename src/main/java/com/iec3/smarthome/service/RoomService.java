@@ -67,10 +67,15 @@ public class RoomService {
     }
 
     public void addDevice(Integer roomId, Integer deviceID) {
-        roomDeviceListDAO.getById(roomId)
-                .ifPresentOrElse(roomDeviceList -> {
-                    roomDeviceListDAO.editDevice(roomId, deviceID, roomDeviceList.getCount(deviceID) + 1);
-                }, () -> roomDeviceListDAO.addDevice(roomId, deviceID));
+        try {
+            roomDeviceListDAO.getById(roomId)
+                    .ifPresentOrElse(roomDeviceList -> {
+                        roomDeviceListDAO.editDevice(roomId, deviceID, roomDeviceList.getCount(deviceID) + 1);
+                    }, () -> roomDeviceListDAO.addDevice(roomId, deviceID));
+        }
+        catch (NullPointerException e) {
+            roomDeviceListDAO.addDevice(roomId, deviceID);
+        }
 
     }
 }

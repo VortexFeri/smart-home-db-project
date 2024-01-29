@@ -21,9 +21,6 @@ public class LoginController {
         return "index";
     }
 
-//    @ResponseBody
-//    @RequestMapping("")
-//
     @PostMapping("login")
     public String getLoginUser(@RequestBody Login user) throws Throwable {
        if(loginService.verifyLogin(user))
@@ -32,11 +29,4 @@ public class LoginController {
        else
            throw new LoginException("Wrong password");
     }
-//    @GetMapping
-//    public String Home(@RequestBody Login user) throws Throwable {
-//            return "Login";
-//    }
-
-
 }
-

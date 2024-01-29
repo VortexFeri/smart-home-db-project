@@ -3,6 +3,7 @@ package com.iec3.smarthome.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iec3.smarthome.dto.RoomListDTO;
+import com.iec3.smarthome.dto.RoomWattageDTO;
 import com.iec3.smarthome.entity.Room;
 import com.iec3.smarthome.entity.RoomDeviceList;
 import com.iec3.smarthome.service.DeviceService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @RequestMapping(path = "rooms")
@@ -58,9 +60,9 @@ public class RoomController {
     }
 
     @DeleteMapping("{roomid}/delete-device/{id}")
-    public String deleteRoom(@PathVariable("id") Integer id) {
-        //roomService.deleteRoom(id);
-        return "redirect:/Deleted";
+    public String deleteRoom(@PathVariable("roomid") Integer roomid, @PathVariable("id") Integer deviceid) {
+        roomService.deleteDeviceInRoom(roomid, deviceid);
+        return "redirect:/rooms/" + roomid;
     }
 
     @PutMapping("{roomid}/edit-device/{id}")
@@ -70,7 +72,7 @@ public class RoomController {
             @RequestBody String body) throws JsonProcessingException {
                 Integer newVal = objectMapper.readValue(body, Integer.class);
                 roomService.editDevice(room_id, device_id, newVal);
-                return "redirect:/rooms";
+        return "redirect:/rooms/" + room_id;
     }
 
     @PostMapping("{roomid}/add-device")
@@ -94,6 +96,21 @@ public class RoomController {
             });
 
             list.add(new RoomListDTO(room.getId(), room.getName(), map));
+        });
+        return list;
+    }
+    @ResponseBody
+    @GetMapping("room-wattage")
+    public List<RoomWattageDTO> getWattages() {
+        var list = new ArrayList<RoomWattageDTO>();
+        roomService.getRoom().forEach(room -> {
+            var map = new HashMap<String, Integer>();
+            AtomicReference<Integer> totalWattage = new AtomicReference<>(0);
+            roomService.getDevices(room.getId()).getDeviceMap().forEach((dev, c) -> {
+                totalWattage.updateAndGet(v -> v + c * dev.wattage());
+            });
+
+            list.add(new RoomWattageDTO(room.getName(), totalWattage.get()));
         });
         return list;
     }

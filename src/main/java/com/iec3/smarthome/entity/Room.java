@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Room implements Serializable {
     public enum RoomType {
-        BEDROOM, BATHROOM, KITCHEN, LIVING_ROOM, OTHER
+        BEDROOM, BATHROOM, KITCHEN, LIVINGROOM, OTHER
     }
     private final RoomType type;
     private final int id;
