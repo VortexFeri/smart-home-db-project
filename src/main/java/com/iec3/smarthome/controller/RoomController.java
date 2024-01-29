@@ -2,6 +2,7 @@ package com.iec3.smarthome.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iec3.smarthome.dto.RoomListDTO;
 import com.iec3.smarthome.entity.Room;
 import com.iec3.smarthome.entity.RoomDeviceList;
 import com.iec3.smarthome.service.DeviceService;
@@ -13,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping(path = "rooms")
@@ -69,4 +72,30 @@ public class RoomController {
                 roomService.editDevice(room_id, device_id, newVal);
                 return "redirect:/rooms";
     }
+
+    @PostMapping("{roomid}/add-device")
+    public String addRoomDevice(
+            @PathVariable("roomid") Integer room_id,
+            @RequestBody String body) throws JsonProcessingException {
+                Integer newDeviceID = objectMapper.readValue(body, Integer.class);
+                roomService.addDevice(room_id, newDeviceID);
+                return "redirect:/rooms/" + room_id;
+    }
+    @ResponseBody
+    @GetMapping("room-list")
+    public List<RoomListDTO> getAll() {
+        var list = new ArrayList<RoomListDTO>();
+        roomService.getRoom().forEach(room -> {
+            var map = new HashMap<String, Integer>();
+
+            roomService.getDevices(room.getId()).getDeviceMap().forEach((dev, c) -> {
+                map.put(dev.name(), c*dev.wattage()
+                );
+            });
+
+            list.add(new RoomListDTO(room.getId(), room.getName(), map));
+        });
+        return list;
+    }
+
 }

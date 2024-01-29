@@ -18,4 +18,18 @@ public class RoomDeviceList {
     public Map<Device, Integer> getDeviceMap() {
         return deviceMap;
     }
+
+    public Device findDeviceById(int id) {
+        for (Device device : deviceMap.keySet()) {
+            if (device.id() == id) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    public int getCount(int device_id) {
+        return deviceMap.get(findDeviceById(device_id));
+    }
+
 }

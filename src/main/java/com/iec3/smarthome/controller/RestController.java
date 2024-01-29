@@ -1,25 +1,29 @@
 package com.iec3.smarthome.controller;
 
-import com.iec3.smarthome.dao.PvPDAO;
 import com.iec3.smarthome.dto.DeviceDTO;
 import com.iec3.smarthome.entity.Device;
 import com.iec3.smarthome.entity.PvP;
+import com.iec3.smarthome.entity.RoomDeviceList;
 import com.iec3.smarthome.service.DeviceService;
 import com.iec3.smarthome.service.PvPService;
+import com.iec3.smarthome.service.RoomService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@org.springframework.web.bind.annotation.RestController
 @RequestMapping(path = "devices")
-public class DeviceController {
+public class RestController {
 
     private final DeviceService deviceService;
+    private final RoomService roomService;
     private final PvPService pvPService;
 
 
-    public DeviceController(DeviceService deviceService, PvPService pvPService) {
+    public RestController(DeviceService deviceService, RoomService roomService, PvPService pvPService) {
         this.deviceService = deviceService;
+        this.roomService = roomService;
         this.pvPService = pvPService;
     }
 

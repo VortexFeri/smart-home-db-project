@@ -67,6 +67,10 @@ public class RoomService {
     }
 
     public void addDevice(Integer roomId, Integer deviceID) {
-        roomDeviceListDAO.addDevice(roomId, deviceID);
+        roomDeviceListDAO.getById(roomId)
+                .ifPresentOrElse(roomDeviceList -> {
+                    roomDeviceListDAO.editDevice(roomId, deviceID, roomDeviceList.getCount(deviceID) + 1);
+                }, () -> roomDeviceListDAO.addDevice(roomId, deviceID));
+
     }
 }
