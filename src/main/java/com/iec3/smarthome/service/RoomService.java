@@ -56,4 +56,17 @@ public class RoomService {
         return roomDeviceListDAO.getById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Room with id %s empty", id)));
     }
+
+    public void deleteDeviceInRoom(Integer roomId, Integer deviceId) {
+        Room room = roomDao.getById(roomId).get();
+        roomDeviceListDAO.removeDevice(roomId, deviceId);
+    }
+
+    public void editDevice(Integer roomId, Integer deviceId, Integer newVal) {
+        roomDeviceListDAO.editDevice(roomId, deviceId, newVal);
+    }
+
+    public void addDevice(Integer roomId, Integer deviceID) {
+        roomDeviceListDAO.addDevice(roomId, deviceID);
+    }
 }

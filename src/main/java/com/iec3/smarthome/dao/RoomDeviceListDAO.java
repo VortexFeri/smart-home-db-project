@@ -78,4 +78,29 @@ public class RoomDeviceListDAO implements Dao<RoomDeviceList,Integer> {
             return new RoomDeviceList(room.get(), map);
         },id).stream().findFirst();
     }
+
+    public int removeDevice(int room_id, int device_id) {
+        var sql = """
+                DELETE FROM devices_in_room
+                WHERE room_id = ? AND device_id = ?;
+                """;
+        return jdbcTemplate.update(sql, room_id, device_id);
+    }
+
+    public int editDevice(int roomId, int deviceId, int newVal) {
+        var sql = """
+                UPDATE devices_in_room
+                SET device_count = ?
+                WHERE room_id = ? AND device_id = ?;
+                """;
+        return jdbcTemplate.update(sql, newVal, roomId, deviceId);
+    }
+
+    public int addDevice(int room_id, int device_id) {
+        var sql = """
+                INSERT INTO devices_in_room(room_id, device_id, device_count)
+                VALUES (?, ?, 1);
+                """;
+        return jdbcTemplate.update(sql, room_id, device_id);
+    }
 }

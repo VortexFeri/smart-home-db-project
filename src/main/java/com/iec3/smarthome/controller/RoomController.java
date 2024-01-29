@@ -1,10 +1,13 @@
 package com.iec3.smarthome.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iec3.smarthome.entity.Room;
 import com.iec3.smarthome.entity.RoomDeviceList;
 import com.iec3.smarthome.service.DeviceService;
 import com.iec3.smarthome.service.PvPService;
 import com.iec3.smarthome.service.RoomService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,10 @@ public class RoomController {
     private final RoomService roomService;
     private final DeviceService deviceService;
 
-    public RoomController(PvPService pvPService, RoomService roomService, DeviceService deviceService) {
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    public RoomController(RoomService roomService, DeviceService deviceService, PvPService pvPService) {
         this.pvPService = pvPService;
         this.roomService = roomService;
         this.deviceService = deviceService;
@@ -54,7 +60,13 @@ public class RoomController {
         return "redirect:/Deleted";
     }
 
-    // TODO: Update room
-
-
+    @PutMapping("{roomid}/edit-device/{id}")
+    public String editRoomDevice(
+            @PathVariable("roomid") Integer room_id,
+            @PathVariable("id") Integer device_id,
+            @RequestBody String body) throws JsonProcessingException {
+                Integer newVal = objectMapper.readValue(body, Integer.class);
+                roomService.editDevice(room_id, device_id, newVal);
+                return "redirect:/rooms";
+    }
 }

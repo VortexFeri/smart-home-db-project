@@ -1,6 +1,8 @@
 package com.iec3.smarthome.entity;
 
-public class Room {
+import java.io.Serializable;
+
+public class Room implements Serializable {
     public enum RoomType {
         BEDROOM, BATHROOM, KITCHEN, LIVING_ROOM, OTHER
     }

@@ -57,7 +57,7 @@ public class LoginDAO implements Dao<Login,String> {
         @Override
         public Login mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Login(
-                    rs.getString("name"),
+                    rs.getString("user"),
                     rs.getString("password"));
 
         }

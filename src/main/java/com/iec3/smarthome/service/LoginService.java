@@ -26,7 +26,7 @@ public class LoginService {
     }
     public Login getLogin(String user) throws Throwable {
         return (Login) loginDao.getById(user)
-                .orElseThrow(() -> new NotFoundException(String.format("Device with id %s not found", user)));
+                .orElseThrow(() -> new NotFoundException(String.format("Error logging in %1", user)));
     }
     public boolean verifyLogin(Login a) throws Throwable {
         return Objects.equals(getLogin(a.user()).password(), a.password());
